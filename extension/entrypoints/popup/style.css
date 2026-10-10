@@ -34,10 +34,26 @@ body {
   margin: 0;
 }
 
-.popup-header p,
 .muted {
   font-size: 12px;
   opacity: 0.75;
+}
+
+.status-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, #1b7a3d 15%, transparent);
+  color: #1b7a3d;
+  white-space: nowrap;
+}
+
+@media (prefers-color-scheme: dark) {
+  .status-badge {
+    background: color-mix(in srgb, #4ade80 20%, transparent);
+    color: #4ade80;
+  }
 }
 
 .site-summary {
@@ -95,6 +111,29 @@ form input {
 /* Explicit top margin so the footer is separated in every popup state. */
 .popup-footer {
   margin-top: 16px;
+  display: flex;
+  gap: 8px;
+}
+
+.popup-footer button {
+  flex: 1;
+}
+
+.popup-help {
+  margin-top: 8px;
+  text-align: center;
+}
+
+button.link {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-size: 11px;
+  color: inherit;
+  opacity: 0.65;
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 .error {

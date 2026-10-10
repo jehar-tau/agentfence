@@ -156,3 +156,32 @@
   `contenteditable` composer (styled like a chat app); Client B's notes and the Public Form are
   plain `<textarea>` fields — between them, every paste target type AgentFence's paste listener
   recognizes gets exercised somewhere in the demo.
+
+## Milestone 6
+
+- **Onboarding is one scrollable page, not a click-through wizard.** The spec lists five things
+  to cover "under 60 seconds" (context boundaries, the six contexts, protecting a site, the
+  default rules, the demo) as _content_, not interaction steps. A single page a user can skim or
+  scroll is faster to get through and far less code than wizard state management.
+- **The default-rules section on the onboarding page is live, not a hardcoded copy.** It calls
+  the same `listRules` used by the Rules page, so it can never drift out of sync with reality,
+  including a rule the user has already changed.
+- **The permission explanation is copied verbatim** from the popup (Milestone 3 / spec §9), shown
+  before the user ever triggers the real prompt, so the wording the user sees in both places
+  always matches.
+- **Onboarding opens on first install only**, via `browser.runtime.onInstalled`'s
+  `reason === 'install'` — never on an update or a `wxt dev` reload, which both fire the same
+  event with a different reason.
+- **"Launch demo" is a plain link to `http://localhost:5300/`, not an automated step.** The
+  extension cannot start `pnpm demo`'s Node process itself, and AGENTS.md #13 rules out
+  pretending it can; the page says plainly that the command needs to be run first.
+- **The Visual Map popup button already opens a real page in Milestone 6**, not a dead link — a
+  small honest stub (`entrypoints/visual-map/`) that says what it will become and links to the
+  Rules page for now. Milestone 7 replaces its content; the entry point and the route the spec
+  asks for already exist and are tested now.
+- **No new permissions.** Opening the extension's own pages in a new tab (`tabs.create` with a
+  `chrome-extension://` URL) does not require the `tabs` permission — only reading _other_ tabs'
+  URLs does.
+- Popup copy "AgentFence is active" is kept (not renamed to "ON") to avoid churning the
+  Milestone 0 test it originated from for a wording-only change; it's now styled as a status
+  badge to match the spec's popup mockup more closely.
