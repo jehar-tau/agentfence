@@ -100,7 +100,9 @@ Full details: [docs/threat-model.md](docs/threat-model.md).
 
 ## Roadmap
 
-v0.1 is this repository. See [ROADMAP.md](ROADMAP.md) for what's next.
+v0.1 is this repository. See [ROADMAP.md](ROADMAP.md) for what's next, including a planned
+Chrome Web Store listing — [docs/chrome-web-store-listing.md](docs/chrome-web-store-listing.md)
+has the listing copy, screenshots, and submission checklist ready to go.
 
 ## Contributing
 

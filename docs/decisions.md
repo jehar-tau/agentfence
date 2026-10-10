@@ -315,3 +315,19 @@ object-src 'self'"`. This matches Chrome's MV3 default (nothing was actually per
   not something to flip silently. Seeding starter issues and cutting a GitHub Release with the
   packaged zip (spec §32, §36) are done as direct repository actions after this PR merges, not as
   part of it, since they aren't branch content.
+
+## Milestone 11 — Chrome Web Store packaging prep
+
+- **Prepared everything short of an account**: listing copy (name, short/detailed description,
+  category), three 1280×800 screenshots generated the same way as earlier milestones' (seeded
+  real data through the service worker, screenshotted with Playwright — not mockups), privacy
+  practices answers and permission justifications derived directly from `docs/permissions.md`,
+  and a submission checklist, all in `docs/chrome-web-store-listing.md`.
+- **Registering a developer account is explicitly not done here.** It requires a one-time fee and
+  creates an account — both outside what should happen without the account owner directly doing
+  it. The checklist says so plainly rather than silently skipping the step.
+- **Confirmed the production ZIP's manifest sits at the package root** (`unzip -l`), which the
+  spec calls out explicitly (§39 step 2) as something to verify, not assume from the build tool.
+- **A small (440×280) promo tile is the one graphic genuinely not ready** — it needs actual
+  design work, not just a differently-cropped screenshot of the running extension the way the
+  three listing screenshots are. Left for whoever does the submission.
