@@ -185,3 +185,34 @@
 - Popup copy "AgentFence is active" is kept (not renamed to "ON") to avoid churning the
   Milestone 0 test it originated from for a wording-only change; it's now styled as a status
   badge to match the spec's popup mockup more closely.
+
+## Milestone 7
+
+- **No Activity History yet (that's a later milestone), so edges are rule-derived, not
+  event-derived.** The map can't show "what happened" because nothing is recorded yet beyond the
+  15-minute copy-provenance cache. Instead, for every pair of distinct contexts actually present
+  among the user's protected sites, it runs the real rule engine
+  (`core/map/build-map.ts`) and draws the edge that evaluation produces. This means the map is
+  always a true, live answer to "what would AgentFence do right now" — including for the demo
+  playground's five sites, which exactly reproduces the spec's example flows (verified in
+  `build-map.test.ts`). Once Activity History exists, real recent events can be layered in or
+  shown alongside these.
+- **Layout is a pure function of counts, not measured from the DOM.** One column per distinct
+  context (a client scope gets its own column), fixed card/gap sizes, position computed
+  arithmetically (`core/map/layout.ts`). This avoids `getBoundingClientRect`/`ResizeObserver`
+  entirely, which also means layout is trivially unit-testable and behaves identically in tests
+  and a real browser — no flake from measuring an unpainted DOM.
+- **Edges are SVG, nodes are HTML buttons**, layered together (SVG absolutely positioned under an
+  HTML layer at the same coordinates). Keeps every interactive element a real, keyboard-reachable
+  button/clickable path rather than fighting SVG's weaker accessibility story for interactive
+  content.
+- **"Confidence" is shown as honestly unavailable** on a selected edge ("this is what the rule
+  says, not a recorded event") rather than inventing or omitting the field silently — matches
+  AGENTS.md #13/#14.
+- **"Current site" filter** is powered by a `?site=hostname` query parameter the popup's "Visual
+  Map" button now appends when a real site is active, read by `visual-map/main.tsx`. Opening the
+  map with no site context (e.g. from `chrome://extensions`) just omits that filter option.
+- **Scope discipline followed per spec §19**: read-only, only non-destructive actions are "open
+  settings" links (to the existing Rules page — there is no dedicated Sites page yet, so the
+  links go to Options generally, worded honestly). No drag-and-drop, no editing on the canvas
+  itself.
