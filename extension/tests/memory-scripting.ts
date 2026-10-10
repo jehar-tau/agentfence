@@ -1,4 +1,4 @@
-import type { ScriptingArea } from '../core/provenance/copy-watcher-registration';
+import type { ScriptingArea } from '../core/enforcement/site-watcher-registration';
 
 /** In-memory stand-in for chrome.scripting, for tests. */
 export function createMemoryScripting(): ScriptingArea & {

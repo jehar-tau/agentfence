@@ -46,13 +46,16 @@ prompt. Before asking, AgentFence shows:
   protection" after declining). You can decline; the context is still saved, and AgentFence says
   plainly that it can't watch copies on that site yet.
 - **What AgentFence can do, once granted:** read the page's rendered text and the current text
-  selection, only on that site, only to detect a copy. It stores a SHA-256 hash of the copied
-  text, its length, the site's domain, its context, the tab id, and a timestamp — in
-  `chrome.storage.session`, cleared when the browser closes, and expired automatically after 15
-  minutes.
-- **What AgentFence does not do:** store or transmit the copied text itself, read the page before
-  a copy happens, or see anything on a site you have not protected. Removing a site's context (or
-  revoking the permission from `chrome://extensions`) stops the detection on that site.
+  selection, only on that site, only to detect a copy or a paste. On a copy, it stores a SHA-256
+  hash of the copied text, its length, the site's domain, its context, the tab id, and a
+  timestamp — in `chrome.storage.session`, cleared when the browser closes, and expired
+  automatically after 15 minutes. On a paste into an editable field, it checks whether the
+  pasted text matches a recent copy and, if your rules say to, can stop the paste and ask or
+  block (see `docs/threat-model.md`).
+- **What AgentFence does not do:** store or transmit the copied or pasted text itself, read the
+  page before a copy or paste happens, or see anything on a site you have not protected.
+  Removing a site's context (or revoking the permission from `chrome://extensions`) stops both
+  on that site.
 
 ## Not requested
 

@@ -118,7 +118,7 @@ describe('SiteContextPanel', () => {
     expect(screen.getByRole('alert').textContent).toContain('not granted');
     expect(permissions.granted.has('https://bank.demo.test/*')).toBe(false);
 
-    fireEvent.click(screen.getByRole('button', { name: 'Turn on copy protection' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Turn on protection' }));
     await waitFor(() => expect(protectionStatus()).toBe('On'));
   });
 
