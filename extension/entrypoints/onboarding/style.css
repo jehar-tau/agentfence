@@ -1,0 +1,130 @@
+:root {
+  color-scheme: light;
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
+  line-height: 1.5;
+}
+
+body {
+  margin: 0;
+  background: #f4f5f7;
+  color: #1a1a1a;
+}
+
+.onboarding {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 32px 20px 64px;
+}
+
+header h1 {
+  font-size: 24px;
+  margin: 0 0 8px;
+}
+
+.lede {
+  font-size: 15px;
+  color: #444;
+}
+
+section {
+  margin-top: 32px;
+}
+
+h2 {
+  font-size: 16px;
+  margin: 0 0 8px;
+}
+
+.muted {
+  font-size: 13px;
+  color: #777;
+}
+
+blockquote {
+  margin: 12px 0;
+  padding: 10px 14px;
+  border-left: 3px solid #1a1a1a;
+  background: #fff;
+  font-size: 13px;
+  font-style: italic;
+}
+
+.context-list {
+  padding-left: 20px;
+  font-size: 14px;
+}
+
+.context-list li {
+  margin-bottom: 6px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+  font-size: 13px;
+}
+
+td {
+  padding: 6px 10px;
+  border-bottom: 1px solid #e3e3e3;
+  background: #fff;
+}
+
+td:last-child {
+  text-align: right;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+tr.decision-block td:last-child {
+  color: #b3261e;
+}
+
+tr.decision-ask td:last-child {
+  color: #8a5a00;
+}
+
+tr.decision-allow td:last-child {
+  color: #1b7a3d;
+}
+
+pre {
+  background: #1a1a1a;
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  width: fit-content;
+}
+
+.button {
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 6px;
+  background: #1a1a1a;
+  color: #fff;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+footer {
+  margin-top: 40px;
+  text-align: center;
+}
+
+footer button {
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 6px;
+  border: 1px solid #1a1a1a;
+  background: #1a1a1a;
+  color: #fff;
+  cursor: pointer;
+}

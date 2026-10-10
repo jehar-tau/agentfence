@@ -8,6 +8,14 @@ type SiteState =
   | { status: 'unsupported' }
   | { status: 'ready'; hostname: string; url: string };
 
+function openVisualMap() {
+  void browser.tabs.create({ url: browser.runtime.getURL('/visual-map.html') });
+}
+
+function openOnboarding() {
+  void browser.tabs.create({ url: browser.runtime.getURL('/onboarding.html') });
+}
+
 export function App() {
   const [site, setSite] = useState<SiteState>({ status: 'loading' });
 
@@ -31,7 +39,9 @@ export function App() {
     <main className="popup">
       <header className="popup-header">
         <h1>AgentFence</h1>
-        <p role="status">AgentFence is active</p>
+        <p role="status" className="status-badge">
+          AgentFence is active
+        </p>
       </header>
       {site.status === 'ready' && (
         <SiteContextPanel
@@ -44,11 +54,19 @@ export function App() {
       {site.status === 'unsupported' && (
         <p className="muted">This page can't be assigned a context. Open a website to set one.</p>
       )}
-      <footer className="popup-footer">
+      <nav className="popup-footer" aria-label="AgentFence">
         <button type="button" onClick={() => void browser.runtime.openOptionsPage()}>
           Rules
         </button>
-      </footer>
+        <button type="button" onClick={openVisualMap}>
+          Visual Map
+        </button>
+      </nav>
+      <p className="popup-help">
+        <button type="button" className="link" onClick={openOnboarding}>
+          How AgentFence works
+        </button>
+      </p>
     </main>
   );
 }

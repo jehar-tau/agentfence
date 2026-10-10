@@ -8,7 +8,8 @@ workflows from leaking information across work, personal, finance, health and cl
 > Status: early development. AgentFence can assign a context to a site, turn on protection for
 > it, and close the loop: copying from one protected site and pasting into another is evaluated
 > against your rules, with an in-page Allow/Ask/Block flow. A demo playground (`pnpm demo`) has
-> five fake sites for trying this end to end. See [docs/product-spec.md](docs/product-spec.md).
+> five fake sites for trying this end to end, and a first-run walkthrough explains all of it.
+> See [docs/product-spec.md](docs/product-spec.md).
 
 ## Quickstart
 
