@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Client A Demo — AgentFence Playground</title>
+    <link rel="stylesheet" href="/shared/style.css" />
+  </head>
+  <body>
+    <div class="demo-banner">AgentFence demo — synthetic data only, not a real client portal</div>
+    <main class="site">
+      <h1>🏢 Client A — ACME Demo Corp</h1>
+      <p class="subtitle">client-a.localhost — a fake client portal, for trying AgentFence</p>
+      <div class="field">
+        <div class="label">Client</div>
+        <div class="value">ACME Demo Corp</div>
+      </div>
+      <div class="field">
+        <div class="label">Confidential launch price</div>
+        <div class="value">₹4,50,000</div>
+      </div>
+      <p class="hint">
+        Select the price above and copy it, then try pasting it into
+        <a id="client-b-link" href="#">Client B Demo</a> — AgentFence should block it.
+      </p>
+    </main>
+    <script>
+      document.getElementById('client-b-link').href =
+        `${location.protocol}//client-b.localhost:${location.port}/`;
+    </script>
+  </body>
+</html>

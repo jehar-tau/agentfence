@@ -130,3 +130,29 @@
   structure/ARIA/keyboard behavior, and the "always allow" rule write — is covered by 31 new unit
   tests using fakes, the same approach used for Milestone 3's permission/scripting APIs. The PR
   description has manual verification steps for the live flow.
+
+## Milestone 5
+
+- **Demo "sites" use the `*.localhost` TLD, not `/etc/hosts`.** AgentFence's context and
+  permission model is keyed by hostname, so the five demo pages need five distinct hostnames to
+  act like real separate sites. Browsers (Chrome included) resolve any `*.localhost` hostname to
+  the loopback address on their own — no hosts-file edit, no setup step. `pnpm demo` starts one
+  Node server (`playground/server.mjs`, built-in `http` only, no framework) that routes purely on
+  the `Host` header: `bank.localhost:5300`, `work-chat.localhost:5300`, and so on all hit the same
+  process and port.
+- **This server is demo/dev tooling, not "the backend"** AGENTS.md #3 rules out — that rule is
+  about the extension's own architecture (no account, no cloud policy engine, no hosted anything
+  for the product itself). The playground is an explicit v0.1 deliverable (spec §3 #15, §20) and
+  needs _some_ way to serve local pages with distinct origins.
+- **Not covered by `pnpm test`.** It's manual-use tooling for a human to click through (same as
+  the spec's own framing, "unsafe demo playground"), so it's verified by hand instead: running the
+  server and confirming each hostname serves the right page, a shared asset loads from any host,
+  an unrecognized host falls back to the landing page, and a `..` in the path is contained. This
+  is a deliberate scope choice, not an oversight.
+- **Synthetic data matches the spec exactly** (AGENTS.md #17): the bank balance, demo account
+  number, and both client names and the confidential price are the spec's own placeholder values,
+  nothing else.
+- **Both input styles are covered across the five sites**: Work Chat's message box is a
+  `contenteditable` composer (styled like a chat app); Client B's notes and the Public Form are
+  plain `<textarea>` fields — between them, every paste target type AgentFence's paste listener
+  recognizes gets exercised somewhere in the demo.

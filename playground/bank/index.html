@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bank Demo — AgentFence Playground</title>
+    <link rel="stylesheet" href="/shared/style.css" />
+  </head>
+  <body>
+    <div class="demo-banner">AgentFence demo — synthetic data only, not a real bank</div>
+    <main class="site">
+      <h1>🏦 Bank Demo</h1>
+      <p class="subtitle">bank.localhost — a fake bank, for trying AgentFence</p>
+      <div class="field">
+        <div class="label">Account holder</div>
+        <div class="value">Alex Demo</div>
+      </div>
+      <div class="field">
+        <div class="label">Balance</div>
+        <div class="value">₹8,42,520</div>
+      </div>
+      <div class="field">
+        <div class="label">Demo account</div>
+        <div class="value">XXXX-DEMO-0000</div>
+      </div>
+      <p class="hint">
+        Select the balance above and copy it (Cmd/Ctrl+C), then paste it into
+        <a id="work-chat-link" href="#">Work Chat Demo</a>.
+      </p>
+    </main>
+    <script>
+      document.getElementById('work-chat-link').href =
+        `${location.protocol}//work-chat.localhost:${location.port}/`;
+    </script>
+  </body>
+</html>
