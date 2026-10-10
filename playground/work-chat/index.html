@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Work Chat Demo — AgentFence Playground</title>
+    <link rel="stylesheet" href="/shared/style.css" />
+    <style>
+      .chat {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+      .msg {
+        background: #f1f3f5;
+        border-radius: 10px;
+        padding: 8px 12px;
+        font-size: 14px;
+        max-width: 80%;
+      }
+      .msg.me {
+        align-self: flex-end;
+        background: #dbe9ff;
+      }
+      .composer {
+        min-height: 60px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 10px;
+        font-size: 14px;
+      }
+      .composer:empty::before {
+        content: attr(data-placeholder);
+        color: #999;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="demo-banner">AgentFence demo — synthetic data only, not a real chat tool</div>
+    <main class="site">
+      <h1>💬 Work Chat Demo</h1>
+      <p class="subtitle">work-chat.localhost — a fake team chat, for trying AgentFence</p>
+      <div class="chat">
+        <div class="msg">
+          Priya: morning! can you send over the latest numbers when you get a sec?
+        </div>
+        <div class="msg me">Alex: sure, grabbing them now</div>
+      </div>
+      <div class="field">
+        <div class="label">Message</div>
+        <div
+          class="composer"
+          contenteditable="true"
+          data-placeholder="Type or paste a message…"
+        ></div>
+      </div>
+      <p class="hint">
+        Paste what you copied from <a id="bank-link" href="#">Bank Demo</a> into the message box
+        above.
+      </p>
+    </main>
+    <script>
+      document.getElementById('bank-link').href =
+        `${location.protocol}//bank.localhost:${location.port}/`;
+    </script>
+  </body>
+</html>

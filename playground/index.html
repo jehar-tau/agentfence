@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AgentFence Demo Playground</title>
+    <link rel="stylesheet" href="/shared/style.css" />
+  </head>
+  <body>
+    <div class="demo-banner">AgentFence demo — every site below uses only synthetic data</div>
+    <main class="site" style="max-width: 560px">
+      <h1>🛡️ AgentFence Demo Playground</h1>
+      <p class="subtitle">Five small fake sites for trying AgentFence's context protection.</p>
+      <ol id="sites"></ol>
+      <h2>Try it</h2>
+      <ol style="font-size: 13px; line-height: 1.6">
+        <li>
+          Open AgentFence's popup on Bank Demo and Work Chat Demo, and assign each a context
+          (Finance, Work).
+        </li>
+        <li>On Bank Demo, select the balance and copy it.</li>
+        <li>On Work Chat Demo, paste into the message box — AgentFence should ask.</li>
+        <li>
+          Protect Client A and Client B too, copy the confidential price from Client A, and try
+          pasting it into Client B — AgentFence should block it.
+        </li>
+      </ol>
+    </main>
+    <script>
+      const sites = [
+        ['bank', 'Bank Demo'],
+        ['work-chat', 'Work Chat Demo'],
+        ['client-a', 'Client A Demo'],
+        ['client-b', 'Client B Demo'],
+        ['public-form', 'Public Form Demo'],
+      ];
+      const list = document.getElementById('sites');
+      for (const [sub, label] of sites) {
+        const url = `${location.protocol}//${sub}.localhost:${location.port}/`;
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = url;
+        a.textContent = `${label} — ${url}`;
+        li.appendChild(a);
+        list.appendChild(li);
+      }
+    </script>
+  </body>
+</html>

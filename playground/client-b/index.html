@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Client B Demo — AgentFence Playground</title>
+    <link rel="stylesheet" href="/shared/style.css" />
+  </head>
+  <body>
+    <div class="demo-banner">AgentFence demo — synthetic data only, not a real client portal</div>
+    <main class="site">
+      <h1>🏢 Client B — Globex Demo Corp</h1>
+      <p class="subtitle">client-b.localhost — a fake client portal, for trying AgentFence</p>
+      <div class="field">
+        <div class="label">Client</div>
+        <div class="value">Globex Demo Corp</div>
+      </div>
+      <div class="field">
+        <div class="label">Notes</div>
+        <textarea rows="4" placeholder="Paste something here…"></textarea>
+      </div>
+      <p class="hint">
+        Try pasting something you copied from <a id="client-a-link" href="#">Client A Demo</a>
+        into the notes above.
+      </p>
+    </main>
+    <script>
+      document.getElementById('client-a-link').href =
+        `${location.protocol}//client-a.localhost:${location.port}/`;
+    </script>
+  </body>
+</html>

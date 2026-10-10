@@ -6,9 +6,9 @@ AgentFence is an open-source, local-first Chrome extension that protects browser
 workflows from leaking information across work, personal, finance, health and client contexts.
 
 > Status: early development. AgentFence can assign a context to a site, turn on protection for
-> it, and now close the loop: copying from one protected site and pasting into another is
-> evaluated against your rules, with an in-page Allow/Ask/Block flow. See
-> [docs/product-spec.md](docs/product-spec.md).
+> it, and close the loop: copying from one protected site and pasting into another is evaluated
+> against your rules, with an in-page Allow/Ask/Block flow. A demo playground (`pnpm demo`) has
+> five fake sites for trying this end to end. See [docs/product-spec.md](docs/product-spec.md).
 
 ## Quickstart
 
@@ -18,6 +18,17 @@ pnpm build
 ```
 
 Then in Chrome: `chrome://extensions` → Developer mode ON → Load unpacked → select `dist/chrome`.
+
+## Demo
+
+```bash
+pnpm demo
+```
+
+Starts five small fake sites — Bank, Work Chat, Client A, Client B, and a Public Form — each on
+its own `*.localhost` hostname (no setup needed; see [docs/decisions.md](docs/decisions.md)).
+Open the URLs it prints, assign each one a context from the AgentFence popup, then copy from one
+and paste into another.
 
 ## Development
 
