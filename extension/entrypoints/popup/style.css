@@ -82,6 +82,16 @@ form input {
   cursor: pointer;
 }
 
+.protection {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+}
+
+.protection p {
+  margin: 0 0 6px;
+}
+
 /* Explicit top margin so the footer is separated in every popup state. */
 .popup-footer {
   margin-top: 16px;
