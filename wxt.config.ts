@@ -12,6 +12,7 @@ export default defineConfig({
     name: 'AgentFence',
     short_name: 'AgentFence',
     description: 'Stop sensitive information from crossing the wrong browser contexts.',
-    // Permissions are added in the milestone that first needs them. See docs/decisions.md.
+    // Permissions are added in the milestone that first needs them. See docs/permissions.md.
+    permissions: ['storage', 'activeTab'],
   },
 });

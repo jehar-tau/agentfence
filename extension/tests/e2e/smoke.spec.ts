@@ -1,22 +1,11 @@
-import path from 'node:path';
-import { chromium, expect, test } from '@playwright/test';
+import { expect, test } from './fixtures';
 
-const extensionPath = path.resolve('dist/chrome');
-
-test('built extension loads and the popup shows the active status', async () => {
-  const context = await chromium.launchPersistentContext('', {
-    channel: 'chromium',
-    args: [`--disable-extensions-except=${extensionPath}`, `--load-extension=${extensionPath}`],
-  });
-  try {
-    const serviceWorker =
-      context.serviceWorkers()[0] ?? (await context.waitForEvent('serviceworker'));
-    const extensionId = new URL(serviceWorker.url()).host;
-
-    const page = await context.newPage();
-    await page.goto(`chrome-extension://${extensionId}/popup.html`);
-    await expect(page.getByText('AgentFence is active')).toBeVisible();
-  } finally {
-    await context.close();
-  }
+test('built extension loads and the popup shows the active status', async ({
+  context,
+  extensionId,
+}) => {
+  const page = await context.newPage();
+  await page.goto(`chrome-extension://${extensionId}/popup.html`);
+  await expect(page.getByText('AgentFence is active')).toBeVisible();
+  await expect(page.getByText("This page can't be assigned a context")).toBeVisible();
 });
