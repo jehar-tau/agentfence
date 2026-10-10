@@ -2,7 +2,12 @@ import { defineBackground } from 'wxt/utils/define-background';
 import { browser } from 'wxt/browser';
 import { evaluatePaste } from '../core/enforcement/evaluate-paste';
 import { handleAlwaysAllowMessage } from '../core/enforcement/handle-always-allow';
-import { isAlwaysAllowMessage, isPasteCheckMessage } from '../core/enforcement/messages';
+import { handleRecordActivityMessage } from '../core/enforcement/handle-record-activity';
+import {
+  isAlwaysAllowMessage,
+  isPasteCheckMessage,
+  isRecordActivityMessage,
+} from '../core/enforcement/messages';
 import {
   reconcileSiteWatchers,
   registerSiteWatchers,
@@ -20,6 +25,7 @@ export default defineBackground({
     browser.runtime.onMessage.addListener((message, sender) => {
       if (isPasteCheckMessage(message)) return evaluatePaste(localArea, sessionArea, message);
       if (isAlwaysAllowMessage(message)) return handleAlwaysAllowMessage(localArea, message);
+      if (isRecordActivityMessage(message)) return handleRecordActivityMessage(localArea, message);
       return handleCopyMessage(localArea, sessionArea, message, sender.tab?.id);
     });
 

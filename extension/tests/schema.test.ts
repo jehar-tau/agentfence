@@ -16,6 +16,7 @@ describe('migrate', () => {
       schemaVersion: CURRENT_SCHEMA_VERSION,
       domainContexts: [],
       flowRules: defaultFlowRules(),
+      activityHistory: [],
     });
   });
 
@@ -34,6 +35,7 @@ describe('migrate', () => {
         },
       ],
       flowRules: [],
+      activityHistory: [],
     };
     expect(migrate(stored)).toEqual(stored);
   });
@@ -79,13 +81,19 @@ describe('loadState', () => {
       schemaVersion: CURRENT_SCHEMA_VERSION,
       domainContexts: [],
       flowRules: defaultFlowRules(),
+      activityHistory: [],
     });
     expect(area.data[STORAGE_KEY]).toEqual(state);
   });
 
   it('does not rewrite storage that is already current', async () => {
     const area = createMemoryArea({
-      [STORAGE_KEY]: { schemaVersion: CURRENT_SCHEMA_VERSION, domainContexts: [], flowRules: [] },
+      [STORAGE_KEY]: {
+        schemaVersion: CURRENT_SCHEMA_VERSION,
+        domainContexts: [],
+        flowRules: [],
+        activityHistory: [],
+      },
     });
     await loadState(area);
     expect(area.writes).toBe(0);

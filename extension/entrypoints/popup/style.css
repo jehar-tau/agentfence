@@ -108,6 +108,12 @@ form input {
   margin: 0 0 6px;
 }
 
+.today-stats {
+  margin-top: 12px;
+  font-size: 12px;
+  opacity: 0.75;
+}
+
 /* Explicit top margin so the footer is separated in every popup state. */
 .popup-footer {
   margin-top: 16px;

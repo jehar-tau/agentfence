@@ -1,3 +1,4 @@
+import type { ActivityEntry } from '../activity/types';
 import type { DomainContext } from '../context/types';
 import { defaultFlowRules } from '../policy/defaults';
 import type { FlowRule } from '../policy/types';
@@ -8,6 +9,7 @@ export interface StoredState {
   schemaVersion: number;
   domainContexts: DomainContext[];
   flowRules: FlowRule[];
+  activityHistory: ActivityEntry[];
 }
 
 type RawState = Record<string, unknown>;
@@ -22,6 +24,8 @@ export const MIGRATIONS: readonly Migration[] = [
   (state) => ({ ...state, domainContexts: [] }),
   // 1 → 2: flow rules, seeded with the defaults.
   (state) => ({ ...state, flowRules: defaultFlowRules() }),
+  // 2 → 3: activity history, empty until the first paste is evaluated.
+  (state) => ({ ...state, activityHistory: [] }),
 ];
 
 export const CURRENT_SCHEMA_VERSION = MIGRATIONS.length;

@@ -48,5 +48,6 @@ export async function evaluatePaste(
     sourceDomain: provenance?.sourceDomain,
     // Milestone 3 only ever records 'exact' matches; 'inferred' heuristics are a later milestone.
     confidence: provenance ? 'exact' : 'unknown',
+    ruleId: evaluation.matchedRule?.id,
   };
 }

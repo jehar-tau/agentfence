@@ -4,6 +4,7 @@ import {
   PASTE_CHECK_MESSAGE_TYPE,
   isAlwaysAllowMessage,
   isPasteCheckMessage,
+  isRecordActivityMessage,
 } from '../core/enforcement/messages';
 
 describe('isPasteCheckMessage', () => {
@@ -44,6 +45,35 @@ describe('isAlwaysAllowMessage', () => {
         type: ALWAYS_ALLOW_MESSAGE_TYPE,
         source: 'finance',
         destination: 'work',
+      }),
+    ).toBe(false);
+  });
+});
+
+describe('isRecordActivityMessage', () => {
+  it('accepts a well-formed record-activity message', () => {
+    expect(
+      isRecordActivityMessage({
+        type: 'agentfence:record-activity',
+        sourceContext: { type: 'finance' },
+        destinationContext: { type: 'work' },
+        destinationDomain: 'work-chat.test',
+        decision: 'ask',
+        outcome: 'blocked',
+      }),
+    ).toBe(true);
+  });
+
+  it('rejects anything else', () => {
+    expect(isRecordActivityMessage(undefined)).toBe(false);
+    expect(
+      isRecordActivityMessage({
+        type: 'agentfence:record-activity',
+        sourceContext: { type: 'finance' },
+        destinationContext: { type: 'work' },
+        decision: 'ask',
+        outcome: 'blocked',
+        // missing destinationDomain
       }),
     ).toBe(false);
   });
