@@ -50,3 +50,9 @@ export async function listProtectedOrigins(permissions: PermissionsArea): Promis
   const { origins = [] } = await permissions.getAll();
   return origins.filter(isSingleHostOriginPattern);
 }
+
+/** Hostnames with a granted single-host origin, regardless of which scheme was granted. */
+export async function listProtectedHostnames(permissions: PermissionsArea): Promise<Set<string>> {
+  const origins = await listProtectedOrigins(permissions);
+  return new Set(origins.map((origin) => new URL(origin.replace('/*', '/')).hostname));
+}

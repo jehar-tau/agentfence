@@ -8,8 +8,12 @@ type SiteState =
   | { status: 'unsupported' }
   | { status: 'ready'; hostname: string; url: string };
 
-function openVisualMap() {
-  void browser.tabs.create({ url: browser.runtime.getURL('/visual-map.html') });
+function openVisualMap(currentSiteHostname?: string) {
+  const base = browser.runtime.getURL('/visual-map.html');
+  const url = currentSiteHostname
+    ? `${base}?site=${encodeURIComponent(currentSiteHostname)}`
+    : base;
+  void browser.tabs.create({ url });
 }
 
 function openOnboarding() {
@@ -58,7 +62,10 @@ export function App() {
         <button type="button" onClick={() => void browser.runtime.openOptionsPage()}>
           Rules
         </button>
-        <button type="button" onClick={openVisualMap}>
+        <button
+          type="button"
+          onClick={() => openVisualMap(site.status === 'ready' ? site.hostname : undefined)}
+        >
           Visual Map
         </button>
       </nav>
