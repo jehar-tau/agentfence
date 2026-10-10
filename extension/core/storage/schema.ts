@@ -1,10 +1,13 @@
 import type { DomainContext } from '../context/types';
+import { defaultFlowRules } from '../policy/defaults';
+import type { FlowRule } from '../policy/types';
 
 export const STORAGE_KEY = 'agentfence:state';
 
 export interface StoredState {
   schemaVersion: number;
   domainContexts: DomainContext[];
+  flowRules: FlowRule[];
 }
 
 type RawState = Record<string, unknown>;
@@ -17,6 +20,8 @@ export type Migration = (state: RawState) => RawState;
 export const MIGRATIONS: readonly Migration[] = [
   // 0 → 1: initial schema with site context assignments.
   (state) => ({ ...state, domainContexts: [] }),
+  // 1 → 2: flow rules, seeded with the defaults.
+  (state) => ({ ...state, flowRules: defaultFlowRules() }),
 ];
 
 export const CURRENT_SCHEMA_VERSION = MIGRATIONS.length;

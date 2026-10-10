@@ -1,0 +1,128 @@
+:root {
+  color-scheme: light dark;
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+body {
+  margin: 0;
+}
+
+.options {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+}
+
+h1 {
+  font-size: 22px;
+}
+
+h2 {
+  font-size: 18px;
+  margin-top: 24px;
+}
+
+h3 {
+  font-size: 15px;
+  margin: 28px 0 8px;
+}
+
+.muted {
+  opacity: 0.75;
+  font-weight: 400;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0;
+}
+
+th,
+td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+}
+
+thead th {
+  font-size: 12px;
+  opacity: 0.75;
+}
+
+tbody th {
+  font-weight: 600;
+}
+
+tr.off th {
+  opacity: 0.55;
+}
+
+.tag {
+  margin-left: 8px;
+  padding: 1px 6px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 400;
+}
+
+select,
+input[type='text'],
+button {
+  padding: 6px 10px;
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.endpoint {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 150px;
+}
+
+.endpoint label {
+  font-size: 12px;
+}
+
+.error {
+  color: #b3261e;
+}
+
+.result {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-left: 4px solid currentColor;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (prefers-color-scheme: dark) {
+  .error {
+    color: #f2b8b5;
+  }
+}
