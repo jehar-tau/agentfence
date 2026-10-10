@@ -58,3 +58,41 @@
 - **Rules UI lives on a new options page** (opens in a tab), reachable from the popup's "Rules"
   button. It includes a "Check a flow" tool that runs the evaluator without saving anything. No
   new permissions.
+
+## Milestone 3
+
+- **Copy detection is opt-in per site, via Chrome's own optional host permissions**, not an
+  install-time grant. `optional_host_permissions` declares `https://*/*` / `http://*/*` in the
+  manifest (nothing is granted from that alone), and `core/provenance/site-protection.ts` requests
+  only the one origin the user is protecting, right when they assign that site a context in the
+  popup — showing the spec's explanation text first. Declining is a normal outcome: the context is
+  still saved, and the popup says plainly that copy protection is off.
+- **No static content script.** The copy watcher is a WXT _unlisted script_
+  (`entrypoints/copy-watcher.ts`, builds to `copy-watcher.js`, not referenced anywhere in the
+  manifest). The background service worker registers it with
+  `chrome.scripting.registerContentScripts` for exactly the granted origins, and un/re-registers
+  as `chrome.permissions.onAdded` / `onRemoved` fire — including a permission revoked from
+  `chrome://extensions` rather than from AgentFence's own UI — plus a reconciliation pass on
+  `onStartup` / `onInstalled`.
+- **The content script only reports an event; it never writes storage.** It posts
+  `{ type: 'agentfence:copy', text, href }` to the background, which normalizes, hashes, resolves
+  the source context, and is the only place that writes `chrome.storage.session`. This keeps the
+  one thing that must never happen (storing raw text) in one reviewable place.
+- **Stored fields match the spec's list** (hash, length, source domain, source context, tab id,
+  timestamp, confidence) with one deliberate omission: `source URL`, which the spec marks
+  optional. Domain is enough to resolve a context and, later, to match a paste's destination;
+  leaving out the full URL keeps the stored footprint smaller.
+- **TTL is lazy, like the schema migration pattern**: an entry older than 15 minutes is dropped
+  the next time anything reads or writes the store, not by a background timer. No `alarms`
+  permission is requested for this. Session storage is also cleared outright when the browser
+  closes.
+- **Normalization is conservative**: Unicode NFC, CRLF/CR → LF, trim, and only runs of 2+ spaces
+  or tabs collapse to one. Newlines and single spaces are left alone, so hashing stays a reliable
+  match for the same copy without being so aggressive that unrelated text could coincide.
+- **Manual-only, like the Milestone 1 toolbar flow:** Chrome's permission prompt is native browser
+  UI, not a page element, so Playwright cannot click it. The grant/decline paths, and the resulting
+  hash recorded for a real copy, need a manual check (steps in the PR description); everything else
+  — normalization, hashing, storage/TTL, the message handler, and every state the popup's
+  protection UI can be in — is covered by unit and component tests using fakes for
+  `chrome.permissions` and `chrome.scripting`.
+- Added `docs/threat-model.md` (AGENTS.md rule 16: security-sensitive changes must update it).
