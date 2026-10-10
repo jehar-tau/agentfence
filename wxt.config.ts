@@ -17,5 +17,10 @@ export default defineConfig({
     // Requested per-site, only once the user assigns that site a context. See
     // core/provenance/site-protection.ts and docs/permissions.md.
     optional_host_permissions: ['https://*/*', 'http://*/*'],
+    // Explicit, even though it matches Chrome's MV3 default: no remote code, no eval, no
+    // inline/remote scripts, nothing but AgentFence's own bundled files. See docs/decisions.md.
+    content_security_policy: {
+      extension_pages: "script-src 'self'; object-src 'self'",
+    },
   },
 });

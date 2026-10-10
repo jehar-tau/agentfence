@@ -14,7 +14,7 @@ interface Props {
 
 const DECISION_COLOR: Record<MapEdge['decision'], string> = {
   allow: '#1b7a3d',
-  ask: '#b36b00',
+  ask: '#8a5a00',
   block: '#b3261e',
 };
 
@@ -44,7 +44,10 @@ export function Canvas({ map, selection, onSelectNode, onSelectEdge }: Props) {
         width={layout.width}
         height={layout.height}
         viewBox={`0 0 ${layout.width} ${layout.height}`}
-        role="img"
+        // "group", not "img" — the edges below are individually focusable and clickable;
+        // role="img" would tell assistive tech to treat the whole thing as one opaque image
+        // and hide them.
+        role="group"
         aria-label="Flows between protected sites"
       >
         <defs>

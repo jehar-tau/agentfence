@@ -118,7 +118,7 @@ body {
 }
 
 .swatch.ask {
-  background: #b36b00;
+  background: #8a5a00;
 }
 
 .swatch.block {
@@ -212,7 +212,7 @@ body {
 
 .canvas-node-badge {
   font-size: 9px;
-  color: #b36b00;
+  color: #8a5a00;
 }
 
 /* Details panel */
@@ -276,7 +276,7 @@ body {
 }
 
 .decision-ask {
-  color: #b36b00;
+  color: #8a5a00;
 }
 
 .decision-block {

@@ -239,3 +239,48 @@
   counts by `decision` (what AgentFence did), not `outcome`, and is omitted entirely rather than
   shown as "0 blocked, 0 asked" when there is nothing to report yet.
 - No new permissions.
+
+## Milestone 9 — security hardening, permission audit, accessibility
+
+A review pass, not new features. Findings and fixes:
+
+**Fixed:**
+
+- **Dependency pinning was broken.** `.npmrc` sets `save-exact=true`, but every entry in
+  `package.json` had drifted to a caret range (`^19.3.0` etc.) despite the lockfile resolving
+  exact versions underneath. Rewrote `package.json` to the exact versions already in
+  `pnpm-lock.yaml` and regenerated the lockfile's specifiers to match; `pnpm install
+--frozen-lockfile` now passes cleanly. Spec §23 asks for this explicitly.
+- **Explicit CSP.** Added `content_security_policy.extension_pages: "script-src 'self';
+object-src 'self'"`. This matches Chrome's MV3 default (nothing was actually permissive before),
+  but makes the policy visible and auditable in the manifest rather than implicit. Deliberately
+  left out `style-src`: the Visual Map positions node cards with computed inline `style={{...}}`
+  attributes (no static class can express a runtime-computed pixel position), and MV3's
+  `extension_pages` CSP enforcement for `style-src` is not something Chrome documents clearly
+  enough to rely on either way — verified empirically instead (loaded the built extension, drove
+  it to render the Visual Map with real data, watched the console: no CSP violations, the inline
+  positions apply correctly). `script-src`/`object-src` are what the spec's security requirements
+  actually care about (no eval, no remote code) and are unaffected by this.
+- **A real accessibility bug in the Visual Map**: the edges `<svg>` had `role="img"`, which tells
+  assistive tech to treat the whole graphic as one opaque image — hiding the individually
+  focusable, clickable edge elements inside it from the accessibility tree. Changed to
+  `role="group"`.
+- **A color-contrast failure**: the "ask" orange used on the Visual Map (`#b36b00` on white) is
+  4.18:1, under WCAG AA's 4.5:1 for normal text. Standardized on the darker orange already used on
+  the onboarding page (`#8a5a00`, 5.93:1) everywhere "ask" is shown as text.
+
+**Audited, no issues found:**
+
+- No `eval`, `new Function`, remote script loading, or dynamic script downloading anywhere in the
+  extension's own code (`innerHTML` only appears in test cleanup, never with untrusted content).
+- No `console.*` calls outside tests — nothing sensitive logged.
+- `pnpm audit`: no known vulnerabilities in any dependency.
+- `docs/permissions.md` cross-checked line by line against the built manifest: accurate, nothing
+  undocumented, nothing documented that isn't actually requested.
+- The demo playground's server binds to `127.0.0.1` only (confirmed again, not just inherited from
+  Milestone 5) — never reachable from the network.
+- Heading hierarchy (h1→h2→h3) is correctly nested on every page, no raw `<img>` without alt text
+  (none are used), no icon-only buttons without a text label, and no suppressed focus outlines
+  anywhere in the codebase.
+- The intervention dialog's focus trap, Escape handling, and ARIA labeling (built in Milestone 4)
+  were re-reviewed and still hold up; no changes needed.
