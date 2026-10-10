@@ -284,3 +284,34 @@ object-src 'self'"`. This matches Chrome's MV3 default (nothing was actually per
   anywhere in the codebase.
 - The intervention dialog's focus trap, Escape handling, and ARIA labeling (built in Milestone 4)
   were re-reviewed and still hold up; no changes needed.
+
+## Milestone 10 — public repo polish
+
+- **All required public-launch files now exist** (spec §28): `LICENSE` (Apache-2.0),
+  `CODE_OF_CONDUCT.md` (Contributor Covenant 2.1), `CONTRIBUTING.md`, `SECURITY.md`,
+  `ROADMAP.md`, `CHANGELOG.md`, `docs/privacy.md`, alongside the `AGENTS.md`,
+  `docs/threat-model.md`, and `docs/permissions.md` that already existed.
+- **Icon**: a simple shield-with-fence-posts SVG, rendered to the four manifest sizes
+  (16/32/48/128) via a headless Playwright screenshot rather than adding an image-processing
+  dependency (e.g. `sharp`) just for this. Lives under `public/`, WXT's convention for files
+  copied to the build output as-is (as opposed to `extension/assets/`, which is for
+  code-imported assets) — the manifest's `icons` paths are absolute (`/icon-16.png`) accordingly.
+- **Social preview** (1280×640, spec §30) and the **Visual Map screenshot** used in the README
+  were both generated the same way: a static HTML/SVG page screenshotted with Playwright at the
+  exact target size, not hand-drawn in an external tool. The Visual Map one seeds real storage
+  with the demo playground's five sites through the service worker, so it's a screenshot of the
+  actual product, not a mockup.
+- **No hero GIF/video.** Recording and editing a demo video is outside what this session's
+  tooling can do (no screen-recording capability). The README's demo section gives the exact
+  steps instead, and the Visual Map screenshot stands in as the one visual. Recording the GIF
+  from the spec's shot list (§35) is a good first task for the user or a contributor once the
+  repo is public.
+- **Copyright line uses "AgentFence contributors"**, the standard open-source convention, since
+  there's no registered entity name to attribute the license to.
+- **What's deliberately left undone here, on purpose**: going public, enabling GitHub's
+  Dependabot/secret-scanning/code-scanning/private-vulnerability-reporting (spec §31 explicitly
+  times these to _after_ public anyway), and anything involving a Chrome Web Store developer
+  account (registration, fees) or an actual account sign-up elsewhere. These are the user's call,
+  not something to flip silently. Seeding starter issues and cutting a GitHub Release with the
+  packaged zip (spec §32, §36) are done as direct repository actions after this PR merges, not as
+  part of it, since they aren't branch content.

@@ -1,0 +1,30 @@
+name: False negative
+description: AgentFence let something through that it should have asked about or blocked.
+labels: ['false-negative']
+body:
+  - type: input
+    id: source
+    attributes:
+      label: Source site and context
+      placeholder: bank.example.com — Finance
+    validations:
+      required: true
+  - type: input
+    id: destination
+    attributes:
+      label: Destination site and context
+      placeholder: public-form.example.com — Public
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why do you think this should have been asked about or blocked?
+    validations:
+      required: true
+  - type: checkboxes
+    id: protected
+    attributes:
+      label: Confirm
+      options:
+        - label: Both the source and destination sites were protected (copy protection shows "On" in the popup) at the time

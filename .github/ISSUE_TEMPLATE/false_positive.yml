@@ -1,0 +1,33 @@
+name: False positive
+description: AgentFence asked or blocked when it shouldn't have.
+labels: ['false-positive']
+body:
+  - type: input
+    id: source
+    attributes:
+      label: Source site and context
+      placeholder: bank.example.com — Finance
+    validations:
+      required: true
+  - type: input
+    id: destination
+    attributes:
+      label: Destination site and context
+      placeholder: work-chat.example.com — Work
+    validations:
+      required: true
+  - type: dropdown
+    id: decision
+    attributes:
+      label: What AgentFence did
+      options:
+        - Asked, when it should have allowed
+        - Blocked, when it should have allowed or asked
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why do you think this should have been allowed?
+    validations:
+      required: true
