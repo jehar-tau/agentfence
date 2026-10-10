@@ -1,3 +1,4 @@
+import type { ActivityOutcome } from '../activity/types';
 import type { ContextRef } from '../context/types';
 import type { FlowDecision } from '../policy/types';
 
@@ -28,6 +29,8 @@ export interface PasteCheckResponse {
   /** Present only when the paste matched a recent, exact copy from a protected site. */
   sourceDomain?: string;
   confidence: 'exact' | 'unknown';
+  /** The rule that produced this decision, if any matched rather than the fallback. */
+  ruleId?: string;
 }
 
 export const ALWAYS_ALLOW_MESSAGE_TYPE = 'agentfence:always-allow' as const;
@@ -47,5 +50,33 @@ export function isAlwaysAllowMessage(message: unknown): message is AlwaysAllowMe
     candidate.source !== null &&
     typeof candidate.destination === 'object' &&
     candidate.destination !== null
+  );
+}
+
+export const RECORD_ACTIVITY_MESSAGE_TYPE = 'agentfence:record-activity' as const;
+
+export interface RecordActivityMessage {
+  type: typeof RECORD_ACTIVITY_MESSAGE_TYPE;
+  sourceContext: ContextRef;
+  destinationContext: ContextRef;
+  sourceDomain?: string;
+  destinationDomain: string;
+  decision: FlowDecision;
+  outcome: ActivityOutcome;
+  ruleId?: string;
+}
+
+export function isRecordActivityMessage(message: unknown): message is RecordActivityMessage {
+  if (!message || typeof message !== 'object') return false;
+  const candidate = message as Record<string, unknown>;
+  return (
+    candidate.type === RECORD_ACTIVITY_MESSAGE_TYPE &&
+    typeof candidate.sourceContext === 'object' &&
+    candidate.sourceContext !== null &&
+    typeof candidate.destinationContext === 'object' &&
+    candidate.destinationContext !== null &&
+    typeof candidate.destinationDomain === 'string' &&
+    typeof candidate.decision === 'string' &&
+    typeof candidate.outcome === 'string'
   );
 }

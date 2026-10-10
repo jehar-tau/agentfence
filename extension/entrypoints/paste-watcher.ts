@@ -5,9 +5,11 @@ import { insertPastedText } from '../core/enforcement/insert-text';
 import {
   ALWAYS_ALLOW_MESSAGE_TYPE,
   PASTE_CHECK_MESSAGE_TYPE,
+  RECORD_ACTIVITY_MESSAGE_TYPE,
   type AlwaysAllowMessage,
   type PasteCheckMessage,
   type PasteCheckResponse,
+  type RecordActivityMessage,
 } from '../core/enforcement/messages';
 import { attachPasteListener } from '../core/enforcement/paste-listener';
 
@@ -32,13 +34,15 @@ async function handlePaste(text: string): Promise<void> {
 
   if (!response) {
     // Could not reach the background to evaluate this paste. Never silently drop it or
-    // silently let it through unexamined without saying so (AGENTS.md #13, #14).
+    // silently let it through unexamined without saying so (AGENTS.md #13, #14). Nothing
+    // was actually decided, so there is nothing to add to activity history either.
     showWarningToast(document, "AgentFence couldn't check this paste, so it was not evaluated.");
     completePaste(text);
     return;
   }
 
   if (response.decision === 'allow') {
+    recordActivity(response, 'allowed');
     completePaste(text);
     return;
   }
@@ -52,7 +56,15 @@ async function handlePaste(text: string): Promise<void> {
     reason: response.reason,
   });
 
-  if (choice === 'block' || choice === 'dismiss') return;
+  if (response.decision === 'block') {
+    recordActivity(response, 'blocked');
+    return; // the native paste was already prevented; "Dismiss" closes the notice, nothing more
+  }
+
+  if (choice === 'block' || choice === 'dismiss') {
+    recordActivity(response, 'blocked');
+    return;
+  }
 
   if (choice === 'always-allow') {
     const allowMessage: AlwaysAllowMessage = {
@@ -62,7 +74,25 @@ async function handlePaste(text: string): Promise<void> {
     };
     void browser.runtime.sendMessage(allowMessage).catch(() => {});
   }
+  recordActivity(response, choice === 'always-allow' ? 'always-allowed' : 'allowed-once');
   completePaste(text);
+}
+
+function recordActivity(
+  response: PasteCheckResponse,
+  outcome: RecordActivityMessage['outcome'],
+): void {
+  const message: RecordActivityMessage = {
+    type: RECORD_ACTIVITY_MESSAGE_TYPE,
+    sourceContext: response.sourceContext,
+    destinationContext: response.destinationContext,
+    sourceDomain: response.sourceDomain,
+    destinationDomain: location.hostname,
+    decision: response.decision,
+    outcome,
+    ruleId: response.ruleId,
+  };
+  void browser.runtime.sendMessage(message).catch(() => {});
 }
 
 function completePaste(text: string): void {

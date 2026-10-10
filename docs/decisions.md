@@ -216,3 +216,26 @@
   settings" links (to the existing Rules page — there is no dedicated Sites page yet, so the
   links go to Options generally, worded honestly). No drag-and-drop, no editing on the canvas
   itself.
+
+## Milestone 8
+
+- **Recording is deferred until the outcome is known, not patched afterward.** For `ask`, no
+  entry is written at evaluation time; `paste-watcher.ts` waits for the dialog to resolve and
+  sends one `agentfence:record-activity` message with the final outcome (`blocked` /
+  `allowed-once` / `always-allowed`). `allow` and `block` write immediately, since nothing further
+  can change them. This means there is exactly one write per completed decision, never a
+  "pending" row that needs to be found and updated later.
+- **Stored in `chrome.storage.local`** (the same versioned object as sites and rules, schema v2→v3
+  adding `activityHistory`), not `storage.session` like copy provenance — activity should survive
+  a browser restart within its retention window, unlike the 15-minute copy cache.
+- **7-day retention, pruned lazily** on the same read/write pattern used everywhere else in this
+  project (copy provenance's 15-minute TTL, the schema migration itself): nothing proactive, no
+  `alarms` permission.
+- **The outcome label matches the spec's own wording exactly** — `describeOutcome()` produces
+  "Asked · user blocked" verbatim for that case, and symmetric wording for the other two ask
+  outcomes.
+- **The popup's "Today: N blocked, N asked" line** (from the spec's popup mockup) is wired in now
+  that there is real data to show — it was deliberately left out in Milestone 6 pending this. It
+  counts by `decision` (what AgentFence did), not `outcome`, and is omitted entirely rather than
+  shown as "0 blocked, 0 asked" when there is nothing to report yet.
+- No new permissions.

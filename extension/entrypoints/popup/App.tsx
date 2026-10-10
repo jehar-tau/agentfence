@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { browser } from 'wxt/browser';
 import { hostnameFromUrl } from '../../core/context/match';
 import { SiteContextPanel } from './SiteContextPanel';
+import { TodayStats } from './TodayStats';
 
 type SiteState =
   | { status: 'loading' }
@@ -58,6 +59,7 @@ export function App() {
       {site.status === 'unsupported' && (
         <p className="muted">This page can't be assigned a context. Open a website to set one.</p>
       )}
+      <TodayStats area={browser.storage.local} />
       <nav className="popup-footer" aria-label="AgentFence">
         <button type="button" onClick={() => void browser.runtime.openOptionsPage()}>
           Rules
