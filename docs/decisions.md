@@ -96,3 +96,37 @@
   protection UI can be in — is covered by unit and component tests using fakes for
   `chrome.permissions` and `chrome.scripting`.
 - Added `docs/threat-model.md` (AGENTS.md rule 16: security-sensitive changes must update it).
+
+## Milestone 4
+
+- **Paste detection reuses Milestone 3's per-site permission exactly.** No new permission is
+  requested; the same grant that enables copy detection on a site also enables paste detection
+  there. `core/enforcement/site-watcher-registration.ts` (renamed from the Milestone 3 provenance
+  module, which it still calls into) registers `copy-watcher.js` and `paste-watcher.js` together,
+  as two files in one `chrome.scripting.registerContentScripts` entry per origin.
+- **Every intercepted paste is prevented first, synchronously**, because the decision needs an
+  async round trip to the background (hash lookup + rule evaluation) and `ClipboardEvent` data is
+  only available synchronously. An **allowed** paste is then completed by re-inserting the text
+  with `document.execCommand('insertText', …)`. This is the one real, documented trade-off of this
+  design: the reinserted text is always plain text, even if the clipboard held rich formatting.
+  See `docs/threat-model.md`.
+- **The in-page Ask/Block dialog is built with plain DOM + Shadow DOM**, not React — it's injected
+  into every page the user protects, so keeping it small and immune to the host page's CSS (and
+  vice versa) mattered more than reusing the popup's component style. It implements its own
+  focus trap (Tab cycles only the dialog's buttons) and treats Escape as the safe default: Block
+  for an Ask dialog, Dismiss for a Block notice.
+- **"Always allow" writes a real rule** via the existing `upsertRule` from Milestone 2 (a new
+  `agentfence:always-allow` message), so it shows up and can be edited or removed on the Rules
+  page like any other rule — no separate "remembered choices" list.
+- **Unmatched provenance is `unknown`, never guessed** — text typed directly, copied more than 15
+  minutes ago, or copied from a site that wasn't protected all evaluate as `unknown → *`, which
+  asks by default. This was already true of the rule engine (Milestone 2); this milestone is the
+  first to actually feed it a real, possibly-missing match.
+- **E2E scope, same honest limit as Milestones 1 and 3**: the full grant → copy → paste → dialog
+  flow needs a real permission grant, which Playwright cannot drive (native browser UI). The
+  existing Playwright smoke/rules specs confirm the built extension (now with two unlisted
+  scripts and the expanded manifest) still loads and runs correctly; the paste pipeline itself —
+  normalization, hashing, provenance matching, rule evaluation, message routing, the dialog's
+  structure/ARIA/keyboard behavior, and the "always allow" rule write — is covered by 31 new unit
+  tests using fakes, the same approach used for Milestone 3's permission/scripting APIs. The PR
+  description has manual verification steps for the live flow.

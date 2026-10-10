@@ -1,4 +1,4 @@
-import { listProtectedOrigins, type PermissionsArea } from './site-protection';
+import { listProtectedOrigins, type PermissionsArea } from '../provenance/site-protection';
 
 type RunAt = 'document_start' | 'document_end' | 'document_idle';
 
@@ -10,30 +10,35 @@ export interface ScriptingArea {
   unregisterContentScripts(filter: { ids: string[] }): Promise<void>;
 }
 
-/** Built from the `copy-watcher` entrypoint; see extension/entrypoints/copy-watcher.ts. */
+/** Built from the unlisted-script entrypoints of the same names; see extension/entrypoints/. */
 export const COPY_WATCHER_SCRIPT_FILE = 'copy-watcher.js';
+export const PASTE_WATCHER_SCRIPT_FILE = 'paste-watcher.js';
 
 function scriptId(originPattern: string): string {
-  return `agentfence-copy-watcher:${originPattern}`;
+  return `agentfence-site-watcher:${originPattern}`;
 }
 
-/** Registers (or re-registers) the copy watcher for one granted origin. Background-only. */
-export async function registerCopyWatcher(
+/**
+ * Registers (or re-registers) both watcher scripts for one granted origin, as a single
+ * registration with two files — they run together in the same isolated world, each setting
+ * up its own listener independently. Background-only.
+ */
+export async function registerSiteWatchers(
   scripting: ScriptingArea,
   originPattern: string,
 ): Promise<void> {
-  await unregisterCopyWatcher(scripting, originPattern);
+  await unregisterSiteWatchers(scripting, originPattern);
   await scripting.registerContentScripts([
     {
       id: scriptId(originPattern),
       matches: [originPattern],
-      js: [COPY_WATCHER_SCRIPT_FILE],
+      js: [COPY_WATCHER_SCRIPT_FILE, PASTE_WATCHER_SCRIPT_FILE],
       runAt: 'document_idle',
     },
   ]);
 }
 
-export async function unregisterCopyWatcher(
+export async function unregisterSiteWatchers(
   scripting: ScriptingArea,
   originPattern: string,
 ): Promise<void> {
@@ -45,14 +50,14 @@ export async function unregisterCopyWatcher(
 }
 
 /**
- * Re-registers the copy watcher for every currently granted site. Called on startup so
+ * Re-registers the watcher scripts for every currently granted site. Called on startup so
  * registrations are correct even if Chrome did not carry them over, and so a permission
  * revoked outside AgentFence (e.g. from chrome://extensions) is picked up.
  */
-export async function reconcileCopyWatchers(
+export async function reconcileSiteWatchers(
   permissions: PermissionsArea,
   scripting: ScriptingArea,
 ): Promise<void> {
   const origins = await listProtectedOrigins(permissions);
-  await Promise.all(origins.map((origin) => registerCopyWatcher(scripting, origin)));
+  await Promise.all(origins.map((origin) => registerSiteWatchers(scripting, origin)));
 }

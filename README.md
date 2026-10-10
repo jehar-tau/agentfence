@@ -5,11 +5,10 @@
 AgentFence is an open-source, local-first Chrome extension that protects browser-based AI
 workflows from leaking information across work, personal, finance, health and client contexts.
 
-> Status: early development. So far you can assign a context (Work, Personal, Finance, Health,
-> Client, Public) to the current site from the popup, turn on copy protection for that site, and
-> view, edit and test flow rules on the settings page. AgentFence can now detect a copy on a
-> protected site and record its hash locally — nothing is evaluated against the rules or blocked
-> yet. See [docs/product-spec.md](docs/product-spec.md).
+> Status: early development. AgentFence can assign a context to a site, turn on protection for
+> it, and now close the loop: copying from one protected site and pasting into another is
+> evaluated against your rules, with an in-page Allow/Ask/Block flow. See
+> [docs/product-spec.md](docs/product-spec.md).
 
 ## Quickstart
 

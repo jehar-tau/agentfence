@@ -91,7 +91,7 @@ export function SiteContextPanel({ hostname, url, area, permissions }: Props) {
       setProtection(granted ? 'on' : 'off');
       if (!granted) {
         setProtectionNote(
-          "Site access was not granted, so AgentFence can't watch copies on this site yet.",
+          "Site access was not granted, so AgentFence can't watch for transfers on this site yet.",
         );
       }
     } catch (grantError) {
@@ -191,7 +191,7 @@ export function SiteContextPanel({ hostname, url, area, permissions }: Props) {
       {assigned && originPattern && (
         <div className="protection" data-testid="protection">
           <p>
-            Copy protection:{' '}
+            Protection:{' '}
             <strong data-testid="protection-status">{protection === 'on' ? 'On' : 'Off'}</strong>
           </p>
           {protection !== 'on' && (
@@ -201,7 +201,7 @@ export function SiteContextPanel({ hostname, url, area, permissions }: Props) {
                 it. Page content stays on your device.
               </p>
               <button type="button" onClick={() => void enableProtection()}>
-                Turn on copy protection
+                Turn on protection
               </button>
             </>
           )}
