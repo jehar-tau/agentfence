@@ -34,3 +34,27 @@
   toolbar button, and opening `popup.html` in a tab does not receive the `activeTab` grant, so the
   popup cannot see another tab's URL in an automated browser run. The real toolbar flow is a
   manual check.
+
+## Milestone 2
+
+- **Rule tiers.** A matching rule is placed in one tier, tried in the spec's order: exact scoped
+  rule (no `*`, at least one client scope) → exact context rule (no `*`, no scope) → same-context
+  rule → wildcard rule (any `*`) → fallback `ask`. Within a tier the order is: more specific
+  endpoints, higher `priority`, user rule over default, more restrictive decision, then id. The
+  result never depends on the order rules are stored in.
+- **`{ type: 'client' }` without a scope means "any client".** That is how `CLIENT:* → PUBLIC` is
+  stored.
+- **`client → client` without scopes means "a different client".** This is how the spec's
+  `CLIENT:A → CLIENT:B` default is stored. It does not match a client flowing to itself, which
+  falls through to the same-context rule.
+- **`unknown` is never "the same context".** Two unassigned sites are not known to belong
+  together, so `unknown → unknown` is decided by the `unknown → *` rule (ask), not allowed.
+- **The same-context rule is a flagged rule** (`sameContext: true`), an addition to the spec's
+  `FlowRule` type, so it can be edited or turned off like any other rule.
+- **One rule per source → destination pair.** Saving a pair that already has a rule updates that
+  rule instead of adding a competing one. Default rules can be changed or turned off but not
+  deleted; "Reset rules to defaults" restores them.
+- **Schema version 2** adds `flowRules`, seeded with the defaults.
+- **Rules UI lives on a new options page** (opens in a tab), reachable from the popup's "Rules"
+  button. It includes a "Check a flow" tool that runs the evaluator without saving anything. No
+  new permissions.

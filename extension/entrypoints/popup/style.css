@@ -75,10 +75,16 @@ form input {
   margin-top: 12px;
 }
 
-.actions button {
+.actions button,
+.popup-footer button {
   padding: 6px 12px;
   font: inherit;
   cursor: pointer;
+}
+
+/* Explicit top margin so the footer is separated in every popup state. */
+.popup-footer {
+  margin-top: 16px;
 }
 
 .error {

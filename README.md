@@ -6,8 +6,9 @@ AgentFence is an open-source, local-first Chrome extension that protects browser
 workflows from leaking information across work, personal, finance, health and client contexts.
 
 > Status: early development. So far you can assign a context (Work, Personal, Finance, Health,
-> Client, Public) to the current site from the popup, and it is saved locally. There are no flow
-> rules and no transfer blocking yet. See [docs/product-spec.md](docs/product-spec.md).
+> Client, Public) to the current site from the popup, and view, edit and test flow rules on the
+> settings page. Nothing is detected or blocked on web pages yet. See
+> [docs/product-spec.md](docs/product-spec.md).
 
 ## Quickstart
 

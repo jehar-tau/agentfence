@@ -36,6 +36,11 @@ export function App() {
       {site.status === 'unsupported' && (
         <p className="muted">This page can't be assigned a context. Open a website to set one.</p>
       )}
+      <footer className="popup-footer">
+        <button type="button" onClick={() => void browser.runtime.openOptionsPage()}>
+          Rules
+        </button>
+      </footer>
     </main>
   );
 }

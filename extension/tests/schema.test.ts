@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { defaultFlowRules } from '../core/policy/defaults';
 import {
   CURRENT_SCHEMA_VERSION,
   STORAGE_KEY,
@@ -14,6 +15,7 @@ describe('migrate', () => {
     expect(migrate(undefined)).toEqual({
       schemaVersion: CURRENT_SCHEMA_VERSION,
       domainContexts: [],
+      flowRules: defaultFlowRules(),
     });
   });
 
@@ -31,6 +33,7 @@ describe('migrate', () => {
           updatedAt: 1,
         },
       ],
+      flowRules: [],
     };
     expect(migrate(stored)).toEqual(stored);
   });
@@ -72,13 +75,17 @@ describe('loadState', () => {
   it('initializes empty storage and persists the migrated state', async () => {
     const area = createMemoryArea();
     const state = await loadState(area);
-    expect(state).toEqual({ schemaVersion: CURRENT_SCHEMA_VERSION, domainContexts: [] });
+    expect(state).toEqual({
+      schemaVersion: CURRENT_SCHEMA_VERSION,
+      domainContexts: [],
+      flowRules: defaultFlowRules(),
+    });
     expect(area.data[STORAGE_KEY]).toEqual(state);
   });
 
   it('does not rewrite storage that is already current', async () => {
     const area = createMemoryArea({
-      [STORAGE_KEY]: { schemaVersion: CURRENT_SCHEMA_VERSION, domainContexts: [] },
+      [STORAGE_KEY]: { schemaVersion: CURRENT_SCHEMA_VERSION, domainContexts: [], flowRules: [] },
     });
     await loadState(area);
     expect(area.writes).toBe(0);
