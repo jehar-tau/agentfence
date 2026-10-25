@@ -12,12 +12,13 @@
   "scripts": {
     "dev": "wxt",
     "build": "wxt build",
+    "build:e2e": "WXT_E2E_TEST_BUILD=true wxt build",
     "package": "wxt zip",
     "lint": "eslint . && prettier --check .",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:e2e-smoke": "playwright test",
+    "test:e2e-smoke": "pnpm build:e2e && playwright test",
     "demo": "node playground/server.mjs",
     "postinstall": "wxt prepare"
   },

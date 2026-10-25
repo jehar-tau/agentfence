@@ -35,9 +35,9 @@ pnpm lint             # eslint + prettier --check
 pnpm format           # prettier --write
 pnpm typecheck
 pnpm test             # vitest
-pnpm build             # dist/chrome/
+pnpm build             # dist/chrome/ — the real, shippable build
 pnpm package           # dist/agentfence-chrome-v0.1.0.zip
-pnpm test:e2e-smoke     # playwright, needs `pnpm build` and `pnpm exec playwright install chromium` first
+pnpm test:e2e-smoke     # playwright — builds dist/e2e/chrome/ itself; needs `pnpm exec playwright install chromium` first
 pnpm demo               # the synthetic demo playground, http://bank.localhost:5300/ etc.
 ```
 

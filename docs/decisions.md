@@ -331,3 +331,59 @@ object-src 'self'"`. This matches Chrome's MV3 default (nothing was actually per
 - **A small (440×280) promo tile is the one graphic genuinely not ready** — it needs actual
   design work, not just a differently-cropped screenshot of the running extension the way the
   three listing screenshots are. Left for whoever does the submission.
+
+## Closing the native-permission-prompt gap in E2E coverage (issue #20)
+
+Researched before building anything, per the issue's own framing ("actually find out whether
+that's fixable, not to assume it isn't"):
+
+- **CDP's `Browser.grantPermissions`/`Browser.setPermission`** cover site permissions
+  (geolocation, notifications, clipboard, etc.) — nothing analogous exists for an extension's
+  `chrome.permissions.request` on a specific origin.
+- **Playwright's maintainers were asked directly** and declined: a 2026 feature request
+  ([microsoft/playwright#32755](https://github.com/microsoft/playwright/issues/32755)) asking for
+  exactly this (`browser.permissionsDialog.confirm()`/`.reject()`) was closed with "Playwright
+  focuses on testing web platform features" — extension optional-permission prompts are
+  explicitly out of scope, not a gap they're planning to fill.
+- **No Chrome enterprise policy auto-grants an extension's optional permissions.**
+  `ExtensionSettings`'s `runtime_blocked_hosts`/`runtime_allowed_hosts` restrict what an
+  _already-granted_ permission can do; they don't grant one. Chrome's own docs are explicit that
+  `permissions.request()` must be called from within a user gesture — there is no documented way
+  around that for an automated test.
+
+So the issue's third option — a test-only seam — is what's implemented, and chosen to be as thin
+as possible:
+
+- **The deviation lives entirely in `wxt.config.ts`'s manifest, not in any application code.**
+  `pnpm build:e2e` (which `pnpm test:e2e-smoke` now runs itself) sets `WXT_E2E_TEST_BUILD=true`,
+  which makes the demo playground's five origins **required** `host_permissions` instead of
+  optional — Chrome auto-grants required permissions on load, with no prompt at all. Every line
+  of `background.ts`, the content scripts, and the enforcement/dialog logic runs completely
+  unaware of and unmodified by this flag; `reconcileSiteWatchers` already treats any currently
+  granted permission the same regardless of whether it came from the manifest or a runtime
+  grant, so the real content scripts register and run exactly as they would for a real user who
+  clicked "Allow" on the native prompt.
+- **Confirmed, not assumed, that this never reaches the shipped build**: `pnpm build` and
+  `pnpm package` (no `build:e2e`) produce a manifest with no `host_permissions` key at all.
+  `dist/e2e/` is a separate output directory from `dist/chrome/`, both still covered by the
+  existing `dist/` gitignore entry.
+- **`extension/tests/e2e/real-enforcement-flow.spec.ts`** is the payoff: two tests that do what
+  every other e2e test couldn't — a real `document.getSelection()` + `Ctrl/Cmd+C` on the real
+  demo playground (started per-test via a new `playgroundServer` fixture), a real `Ctrl/Cmd+V`
+  into a real `contenteditable` composer, the real copy-watcher/paste-watcher content scripts,
+  the real in-page Shadow DOM dialog, and a real Block (text never lands) and a real seamless
+  same-context allow (text does land, no dialog). The one non-extension-specific gap — Playwright
+  itself has no native clipboard — uses Playwright's own well-supported
+  `context.grantPermissions(['clipboard-read', 'clipboard-write'])`, unrelated to the extension's
+  permission model entirely.
+- **Hit, and fixed, the same storage-migration pitfall as the Milestone 7/10/11 screenshots**:
+  writing `domainContexts` directly via the service worker without first letting a real
+  `loadState()` call run leaves no `schemaVersion` on the written object, so the _next_ real
+  `loadState()` (e.g. when the background evaluates the copy) sees version 0 and re-runs every
+  migration from scratch — including the one that resets `domainContexts` to `[]`. Fixed by
+  visiting `options.html` once (`warmUpStorage`) before seeding, the same fix used earlier this
+  session for the Visual Map and Chrome Web Store screenshots.
+
+**Verified** `pnpm build` and `pnpm package` are unaffected (no `host_permissions` in that
+manifest) and all 8 e2e tests (6 existing + 2 new) pass together via the normal
+`pnpm test:e2e-smoke` from a clean `dist/`.
